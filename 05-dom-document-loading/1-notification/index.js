@@ -2,10 +2,16 @@ const notifications = [];
 
 export default class NotificationMessage {
   timer = null;
+  static lastNotification = null;
   constructor(message = '', {duration = 1000, type = 'success'} = {}) {
     this.message = message;
     this.duration = duration;
     this.type = type;
+
+    if (NotificationMessage.lastNotification) {
+      NotificationMessage.lastNotification.remove();
+    }
+
     this.render();
   }
   get headerTemplate() {
@@ -29,32 +35,22 @@ export default class NotificationMessage {
       </div>
     `;
   }
-  render(el = null) {
-    const element = el || document.createElement('div');
+  render() {
+    const element = document.createElement('div');
     element.innerHTML = this.template;
-    this.element = (el) ? el : element.firstElementChild;
+    this.element = element.firstElementChild;
   }
-  show(outerElement = null) {
-    this.destroy();
-    this.render(outerElement);
-    notifications.push(this);
-    document.body.append(notifications[0].element);
+  show(outerElement = document.body) {
+    NotificationMessage.lastNotification = this;
+    outerElement.append(this.element)
     this.timer = setTimeout(() => {
-      this.destroy();
+      this.remove();
     }, this.duration);
   }
   remove() {
     this.element.remove();
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
   }
   destroy() {
     this.remove();
-    if (notifications.length) {
-      const lastNotificator = notifications.shift();
-      lastNotificator.remove();
-    }
   }
 }
