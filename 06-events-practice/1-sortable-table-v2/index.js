@@ -4,17 +4,22 @@ export default class SortableTable {
   constructor(header = [], {data} = []) {
     this.header = header;
     this.data = data;
+
+    const initialSortedField = this.header.find(item => item.sortable === true);
+    if (initialSortedField) {
+      initialSortedField.order = 'asc';
+      const {id, order} = initialSortedField;
+      this.sortData(id, order);
+    }
     this.render();
-    const initialSortedField = this.subElements.header.querySelector('[data-sortable=true]');
-    const initialSortedFieldName = initialSortedField.dataset.id;
-    this.sort(initialSortedFieldName, 'asc');
     this.initEventListeners();
   }
 
-  headerItemTemplate({id, sortable, title}) {
+  headerItemTemplate({id, sortable, title, order}) {
     return `
       <div class="sortable-table__cell"
            data-element="${id}"
+           ${ (order) ? 'data-order = ' + order : ''}
            data-id="${id}"
            data-sortable="${sortable}"
       >
