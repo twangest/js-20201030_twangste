@@ -9,7 +9,7 @@ export default class SortableTable {
     if (initialSortedField) {
       initialSortedField.order = 'asc';
       const {id, order} = initialSortedField;
-      this.sortData(id, order);
+      this.data = this.sortData(id, order);
     }
     this.render();
     this.initEventListeners();
