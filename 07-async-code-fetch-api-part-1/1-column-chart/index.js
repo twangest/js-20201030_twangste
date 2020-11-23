@@ -46,7 +46,7 @@ export default class ColumnChart {
         </div>
         <div class="column-chart__container">
            <div data-element="header" class="column-chart__header">
-             ${this.value}
+             ${this.getValue()}
            </div>
           <div data-element="body" class="column-chart__chart">
             ${this.getColumnBody(this.data)}
@@ -112,8 +112,7 @@ export default class ColumnChart {
   }
 
   getValue() {
-    const values = this.getDataValues();
-    return [...values].reduce((total, value)=>{ return total += value; });
+    return [...this.getDataValues()].reduce((total, value)=>{ return total += value; }, 0);
   }
 
   dataMap = ([date, value]) => ({date, value})
