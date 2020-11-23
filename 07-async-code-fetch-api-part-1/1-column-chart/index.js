@@ -22,16 +22,12 @@ export default class ColumnChart {
   }
 
   getColumnBody(data) {
-    const values = [];
-    data.forEach(item => {
-      values.push(item.value);
-    });
+    const values = this.getDataValues();
     const maxValue = Math.max(...values);
     const scale = this.chartHeight / maxValue;
     return data
       .map(item => {
         const percent = (item.value / maxValue * 100).toFixed(0);
-
         return `<div style="--value: ${Math.floor(item.value * scale)}" data-tooltip="${percent}%"></div>`;
       })
       .join('');
@@ -96,16 +92,30 @@ export default class ColumnChart {
       const response = await fetch(url);
       const responseJson = await response.json();
       this.data = [...Object.entries(responseJson)].map(this.dataMap);
+      this.subElements.header.innerHTML = this.getValue();
       this.subElements.body.innerHTML = this.getColumnBody(this.data);
       if (this.data.length && this.element.classList.contains('column-chart_loading')) {
         this.element.classList.remove('column-chart_loading');
       }
     }
     catch (e) {
-      //NOTE: Обработка ошибок загрузки с данных с сервера
+      //NOTE: Обработка ошибок загрузки данных с сервера
       //console.log(e)
     }
   }
+  getDataValues() {
+    const values = [];
+    this.data.forEach(item => {
+      values.push(item.value);
+    });
+    return values;
+  }
+
+  getValue() {
+    const values = this.getDataValues();
+    return [...values].reduce((total, value)=>{ return total += value; });
+  }
+
   dataMap = ([date, value]) => ({date, value})
 
   remove () {
