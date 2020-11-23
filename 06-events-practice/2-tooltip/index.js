@@ -1,12 +1,18 @@
 class Tooltip {
-  tooltipElements;
+  static _instance;
+
+  deltaX = 10;
+  deltaY = 10;
+
   initialize() {
     this.initEventListeners();
   }
 
   constructor() {
-    this.deltaX = 10;
-    this.deltaY = 10;
+    if (Tooltip._instance) {
+      return Tooltip._instance;
+    }
+    Tooltip._instance = this;
   }
 
   getTemplate(message = '') {
@@ -20,19 +26,17 @@ class Tooltip {
   }
   showTooltip = (element) => {
     const targetElement = element.target;
-    if (targetElement.dataset.tooltip) {
-      this.render(targetElement.dataset.tooltip);
+    const tooltipMessage = targetElement.dataset.tooltip;
+    if (tooltipMessage) {
+      this.render(tooltipMessage);
       targetElement.addEventListener('pointermove', this.moveTooltip);
     }
-
   }
   moveTooltip = (element) => {
     this.element.style.left = `${element.clientX + this.deltaX}px`;
     this.element.style.top = `${element.clientY + this.deltaY}px`;
   }
-  closeTooltip = (element) => {
-    const targetElement = element.target;
-    targetElement.removeEventListener('pointermove', this.moveTooltip);
+  closeTooltip = () => {
     this.remove();
   }
   initEventListeners() {
