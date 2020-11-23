@@ -1,7 +1,6 @@
 const notifications = [];
 
 export default class NotificationMessage {
-  timer = null;
   static lastNotification = null;
   constructor(message = '', {duration = 1000, type = 'success'} = {}) {
     this.message = message;
@@ -42,8 +41,8 @@ export default class NotificationMessage {
   }
   show(outerElement = document.body) {
     NotificationMessage.lastNotification = this;
-    outerElement.append(this.element)
-    this.timer = setTimeout(() => {
+    outerElement.append(this.element);
+    setTimeout(() => {
       this.remove();
     }, this.duration);
   }
