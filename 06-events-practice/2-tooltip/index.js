@@ -9,39 +9,35 @@ class Tooltip {
     this.deltaY = 10;
   }
 
-  getTemplate(message = '', {clientX, clientY}) {
-    return `<div class="tooltip"
-                style="left: ${clientX + this.deltaX}px; top: ${clientY + this.deltaY}px;"
-             >
-                ${message}
-             </div>`;
+  getTemplate(message = '') {
+    return `<div class="tooltip">${message}</div>`;
   }
   render(message, position = {}) {
-    if (this.element) {
-      this.remove();
-    }
     const wrapper = document.createElement('div');
-    wrapper.innerHTML = this.getTemplate(message, position);
+    wrapper.innerHTML = this.getTemplate(message);
     this.element = wrapper.firstElementChild;
     document.body.append(this.element);
   }
   showTooltip = (element) => {
     const targetElement = element.target;
-    this.render(targetElement.dataset.tooltip);
+    if (targetElement.dataset.tooltip) {
+      this.render(targetElement.dataset.tooltip);
+      targetElement.addEventListener('pointermove', this.moveTooltip);
+    }
+
   }
-  moveTooltip = (el) => {
-    this.render(el.target.dataset.tooltip, el);
+  moveTooltip = (element) => {
+    this.element.style.left = `${element.clientX + this.deltaX}px`;
+    this.element.style.top = `${element.clientY + this.deltaY}px`;
   }
   closeTooltip = (element) => {
+    const targetElement = element.target;
+    targetElement.removeEventListener('pointermove', this.moveTooltip);
     this.remove();
   }
   initEventListeners() {
-    this.tooltipElements = document.body.querySelectorAll('[data-tooltip]');
-    this.tooltipElements.forEach(elem => {
-      elem.addEventListener('pointerover', this.showTooltip);
-      elem.addEventListener('pointermove', this.moveTooltip);
-      elem.addEventListener('pointerout', this.closeTooltip);
-    });
+    document.addEventListener('pointerover', this.showTooltip);
+    document.addEventListener('pointerout', this.closeTooltip);
   }
   remove() {
     if (this.element) {
@@ -49,16 +45,10 @@ class Tooltip {
     }
   }
   destroy() {
+    document.removeEventListener('pointerover', this.showTooltip);
+    document.removeEventListener('pointerout', this.closeTooltip);
     this.remove();
     this.element = null;
-    if (this.tooltipElements) {
-      this.tooltipElements.forEach(elem => {
-        elem.removeEventListener('pointerover', this.showTooltip);
-        elem.removeEventListener('pointermove', this.moveTooltip);
-        elem.removeEventListener('pointerout', this.closeTooltip);
-      });
-    }
-    this.tooltipElements = null;
   }
 }
 
