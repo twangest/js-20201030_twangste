@@ -171,17 +171,7 @@ export default class SortableTable {
 
   sort(id, order) {
     const sortedData = this.sortData(id, order);
-    const allColumns = this.element.querySelectorAll('.sortable-table__cell[data-id]');
-    const currentColumn = this.element.querySelector(`.sortable-table__cell[data-id="${id}"]`);
-
-
-    allColumns.forEach(column => {
-      column.dataset.order = '';
-    });
-
-    currentColumn.dataset.order = order;
-
-    this.subElements.body.innerHTML = this.getTableRows(sortedData);
+    this.renderRows(sortedData);
   }
 
   sortData(field, order) {
@@ -229,7 +219,6 @@ export default class SortableTable {
       } else {
         this.sortOnServer(id, order, 0, this.end);
       }
-
     }
   };
 
