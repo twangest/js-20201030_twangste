@@ -227,7 +227,7 @@ export default class SortableTable {
       if (this.isSortLocaly) {
         this.sort(id, order);
       } else {
-        this.sortOnServer(id, order, 0, 0 + this.step);
+        this.sortOnServer(id, order, 0, this.end);
       }
 
     }
