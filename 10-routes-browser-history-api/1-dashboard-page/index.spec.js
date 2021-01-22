@@ -8,7 +8,7 @@ describe('routes-browser-history-api/dashboard-page', () => {
     const element = await dashboardPage.render();
 
     document.body.append(element);
-  });
+  })
 
   afterEach(() => {
     dashboardPage.destroy();

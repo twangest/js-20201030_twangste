@@ -42,7 +42,6 @@ describe('tests-for-frontend-apps/product-form-v2', () => {
           names.push(`${category.title} > ${child.title}`);
         }
       }
-
       return names;
     }
 
